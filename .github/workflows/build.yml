@@ -18,6 +18,7 @@ jobs:
         working-directory: ejet_mcdu
         run: |
           flutter create --org com.example --project-name ejet_mcdu .
+          sed -i -E 's/compileSdk(Version)?[ =]+flutter\.compileSdkVersion/compileSdk = 36/' android/app/build.gradle*
           sed -i 's#<application#<uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.VIBRATE"/>\n    <application#' android/app/src/main/AndroidManifest.xml
           flutter pub get
           flutter build apk --release
