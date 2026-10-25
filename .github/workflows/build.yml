@@ -18,7 +18,8 @@ jobs:
         working-directory: ejet_mcdu
         run: |
           flutter create --org com.example --project-name ejet_mcdu .
-          sed -i -E 's/compileSdk(Version)?[ =]+flutter\.compileSdkVersion/compileSdk = 36/' android/app/build.gradle*
+          printf '%s\n' "subprojects {" "  afterEvaluate { p ->" "    if (p.hasProperty('android')) { p.android.compileSdkVersion 36 }" "  }" "}" > android/fix.gradle
+          if [ -f android/build.gradle.kts ]; then sed -i '1i apply(from = "fix.gradle")' android/build.gradle.kts; else sed -i "1i apply from: 'fix.gradle'" android/build.gradle; fi
           sed -i 's#<application#<uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.VIBRATE"/>\n    <application#' android/app/src/main/AndroidManifest.xml
           flutter pub get
           flutter build apk --release
